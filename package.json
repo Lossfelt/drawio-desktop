@@ -1,6 +1,6 @@
 {
   "name": "draw.io",
-  "version": "31.4.5",
+  "version": "31.4.6-archimate.1",
   "description": "draw.io desktop",
   "exports": "./src/main/electron.js",
   "type": "module",
@@ -12,6 +12,7 @@
     "start": "electron .",
     "sync": "node ./sync.cjs",
     "test": "node --test src/test/cli-args.test.js src/test/msi-project-created.test.js src/test/window-bounds.test.js src/test/update-channel.test.js",
+    "build:archimate4-win": "electron-builder --config electron-builder-archimate4-win.json --publish never",
     "release-win": "electron-builder --config electron-builder-win.json --publish always",
     "release-win-arm64": "electron-builder --config electron-builder-win-arm64.json --publish always",
     "release-appx": "electron-builder --config electron-builder-appx.json --publish always",

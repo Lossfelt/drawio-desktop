@@ -3,7 +3,84 @@ About
 
 **drawio-desktop** is a diagramming desktop app based on [Electron](https://electronjs.org/) that wraps the [core draw.io editor](https://github.com/jgraph/drawio).
 
-Download built binaries from the [releases section](https://github.com/jgraph/drawio-desktop/releases).
+Private ArchiMate 4 fork
+-------------------------
+
+This is a private fork of draw.io Desktop for local ArchiMate 4 modelling. It
+is not an official draw.io distribution and is not intended for upstream
+contribution or support.
+
+The fork currently adds the following ArchiMate 4 workflow improvements:
+
+- A relationship chooser when a Quick Connect arrow is dragged between two
+  ArchiMate 4 elements. It includes the standard relationship types, including
+  the three Access notations: unspecified, read or write, and read/write.
+- Junction-aware Quick Connect. The first relationship connected to an And or
+  Or junction selects the relationship type. Later connections inherit that
+  type, including connections made through the Shape Picker. Junction-to-
+  junction connections are deliberately blocked.
+- An ArchiMate 4 Shape Picker containing the semantic ArchiMate elements,
+  without a duplicate of the source element or the Grouping element. Generic
+  Common elements are represented once, while the domain-specific variants
+  remain available. And and Or junctions are included when starting from a
+  regular ArchiMate element.
+- Larger default And and Or junctions, both in the sidebar and when created
+  from the Shape Picker.
+
+Relationship and target-element validity is not yet checked against the
+ArchiMate relationship matrix. That is a planned enhancement; users must
+currently choose a semantically valid relationship themselves.
+
+The implementation is primarily in
+`drawio/src/main/webapp/js/diagramly/ArchiMateQuickConnect.js`, with related
+ArchiMate shape definitions in
+`drawio/src/main/webapp/js/diagramly/sidebar/Sidebar-ArchiMate4.js`.
+
+Run the private fork in development mode on Windows:
+
+```powershell
+cd C:\Repositories\drawio-desktop
+$env:DRAWIO_ENV = "dev"
+npm start
+```
+
+Close any official draw.io Desktop instance before starting it, then open
+diagrams from this development instance. This avoids Windows forwarding the
+launch to the installed application instead of the fork. The fork window title
+ends with ` (ArchiMate4-fork)`.
+
+### Run and distribute the private Windows fork
+
+The fork has its own Windows app id, product name and user-data directory. It
+deliberately registers no file associations, so the
+official app remains the default for `.drawio`, `.vsdx`, `.mmd` and `.mermaid`
+files. The fork can therefore run alongside an official
+draw.io installation.
+
+Build the private Windows fork:
+
+```powershell
+npm run sync -- disableUpdate
+npm run build:archimate4-win
+```
+
+The tested portable application is the complete directory
+`dist/archimate4-fork/win-unpacked/`. Start
+`draw.io ArchiMate4-fork.exe` from that directory, and keep all its adjacent
+files together. It can be copied or zipped and shared without installation.
+
+The build configuration also targets an optional per-user NSIS installer. Only
+distribute one when the build has actually produced
+`draw.io ArchiMate4-fork-<version>-windows-installer.exe` in
+`dist/archimate4-fork/`. An unsigned installer may require *More info* and
+*Run anyway* in SmartScreen. It has a separate product identity and does not
+replace the official draw.io installation.
+
+Automatic updates are disabled for this private fork. For a shared release,
+publish the source and artifacts from a repository you control, create a tag
+for each version, and attach either the portable ZIP, the verified installer,
+or both to that repository's release. Do not use the upstream draw.io release
+page or its publishing scripts for fork releases.
 
 **Can I use this app for free?** Yes, under the apache 2.0 license. If you don't change the code and accept it is provided "as-is", you can use it for any purpose.
 

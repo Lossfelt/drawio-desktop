@@ -19,6 +19,18 @@ import contextMenu from 'electron-context-menu';
 import {spawn, exec} from 'child_process';
 import {disableUpdate as disUpPkg} from './disableUpdate.js';
 
+// Keep this private fork independent from any official draw.io installation.
+// This must precede electron-store, which resolves its storage location from
+// Electron's userData path during construction.
+const ARCHIMATE4_FORK_APP_ID = 'lossfelt.drawio.archimate4fork';
+const ARCHIMATE4_FORK_USER_DATA = 'draw.io ArchiMate4-fork';
+app.setPath('userData', path.join(app.getPath('appData'), ARCHIMATE4_FORK_USER_DATA));
+
+if (process.platform === 'win32')
+{
+	app.setAppUserModelId(ARCHIMATE4_FORK_APP_ID);
+}
+
 let store;
 
 try
@@ -611,6 +623,7 @@ const devSources = __DEV__ && fs.existsSync(path.join(codeDir, 'js', 'diagramly'
 var queryObj = {
 	'dev': devSources ? 1 : 0,
 	'test': __DEV__ ? 1 : 0,
+	'archimate4Fork': isWin ? 1 : 0,
 	'gapi': 0,
 	'db': 0,
 	'od': 0,
@@ -703,6 +716,12 @@ function createWindow (opt = {})
 
 	let mainWindow = new BrowserWindow(options)
 	windowsRegistry.push(mainWindow)
+
+	mainWindow.on('page-title-updated', (event, title) =>
+	{
+		event.preventDefault();
+		mainWindow.setTitle(title + ' (ArchiMate4-fork)');
+	});
 
 	if (lastWinSize.maximized)
 	{
@@ -938,13 +957,18 @@ app.whenReady().then(() =>
 			return;
 		}
 
+		// Source-mode stencil loading uses eval. Keep this development-only so
+		// packaged builds retain their stricter production CSP.
+		const scriptSources = "'self' 'wasm-unsafe-eval'" +
+			(__DEV__ ? " 'unsafe-eval'" : '');
+
 		callback({
 			responseHeaders: {
 				...details.responseHeaders,
 				// 'wasm-unsafe-eval' is required to compile the inlined libavoid WASM edge
 				// router; without it this header CSP overrides the more permissive meta CSP
 				// set in ElectronApp.js (the strictest of multiple policies wins)
-				'Content-Security-Policy': ['default-src \'self\'; script-src \'self\' \'wasm-unsafe-eval\'; connect-src \'self\'' +
+				'Content-Security-Policy': ['default-src \'self\'; script-src ' + scriptSources + '; connect-src \'self\'' +
 				(isGoogleFontsEnabled? ' https://fonts.googleapis.com https://fonts.gstatic.com' : '') + '; img-src * data:; media-src *; font-src * data:; frame-src \'self\'; style-src \'self\' \'unsafe-inline\'' +
 				(isGoogleFontsEnabled? ' https://fonts.googleapis.com' : '') + '; base-uri \'none\';child-src \'self\';object-src \'none\';']
 			}
