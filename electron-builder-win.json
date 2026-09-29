@@ -10,6 +10,7 @@
     "!drawio/src/main/webapp/js/diagramly{,/**}",
     "drawio/src/main/webapp/js/diagramly/{ElectronApp,DesktopLibrary}.js",
     "drawio/src/main/webapp/js/diagramly/ArchiMateQuickConnect.js",
+    "drawio/src/main/webapp/js/diagramly/ArchiMateKeyboardShortcuts.js",
     "drawio/src/main/webapp/js/diagramly/sidebar/Sidebar-ArchiMate4.js",
     "!drawio/src/main/webapp/js/grapheditor{,/**}",
     "!drawio/src/main/webapp/mxgraph/src{,/**}",

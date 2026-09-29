@@ -26,6 +26,10 @@ The fork currently adds the following ArchiMate 4 workflow improvements:
   regular ArchiMate element.
 - Larger default And and Or junctions, both in the sidebar and when created
   from the Shape Picker.
+- Keyboard shortcuts for arranging a selection: Alt+Left/Right/Up/Down aligns
+  to the left, right, top or bottom edge, Ctrl+Space distributes by equal
+  spacing between edges and Ctrl+Shift+Space by equal distance between
+  centers. Distribution runs horizontally for a row and vertically for a column.
 
 Relationship and target-element validity is not yet checked against the
 ArchiMate relationship matrix. That is a planned enhancement; users must
