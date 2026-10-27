@@ -5,6 +5,7 @@
   "asar": true,
   "files": [
     "**/*",
+    "!dist{,/**}",
     "!**/WEB-INF{,/**}",
     "!drawio/src/main/webapp/stencils/**/*.xml",
     "!drawio/src/main/webapp/shapes{,/**}",
